@@ -25,6 +25,10 @@ Pocky uses the following folders to store the files it generates. Note that all 
 
 This project is licensed under the GNU GPLv3. See [LICENSE.md](https://github.com/YoPhlox/Pocky/blob/master/LICENSE) for details.
 
+# Tested Games
+
+- Hatsune Miku: Project Mirai DX
+
 # Credits
 
 YoPhlox - Pocky

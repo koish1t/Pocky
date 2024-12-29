@@ -292,6 +292,29 @@ void applyMod(size_t index)
 	createInfo("Success!", getPathFromCell(cellIndex) + " has been applied. Restart game to see changes.");
 }
 
+Result deleteEntry(FS_Archive archive, const std::u16string &path) {
+	Result res = 0;
+	Handle handle;
+	
+	if (R_SUCCEEDED(FSUSER_OpenDirectory(&handle, archive, fsMakePath(PATH_UTF16, path.data()))))
+	{
+		FSDIR_Close(handle);
+		res = FSUSER_DeleteDirectoryRecursively(archive, fsMakePath(PATH_UTF16, path.data()));
+		if (R_FAILED(res)) {
+			createError(res, "Failed to delete directory: romfs");
+		}
+	}
+	else 
+	{
+		res = FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, path.data()));
+		if (R_FAILED(res)) {
+			createError(res, "Failed to delete file: romfs");
+		}
+	}
+	
+	return res;
+}
+
 Result disableMod(size_t index)
 {
 	Result res = 0;
@@ -305,13 +328,18 @@ Result disableMod(size_t index)
 	
 	if (directoryExist(getArchiveSDMC(), lumaTitlePath))
 	{
-		res = FSUSER_DeleteDirectoryRecursively(getArchiveSDMC(), fsMakePath(PATH_UTF16, lumaTitlePath.data()));
-		if (R_FAILED(res))
+		std::u16string romfsPath = lumaTitlePath + u8tou16("romfs");
+		if (directoryExist(getArchiveSDMC(), romfsPath))
 		{
-			createError(res, "Failed to remove mod files.");
-			return res;
+			res = deleteEntry(getArchiveSDMC(), romfsPath);
+			if (R_SUCCEEDED(res)) {
+				createInfo("Success!", "Mod has been disabled. Restart game to see changes.");
+			}
 		}
-		createInfo("Success!", "Mod has been disabled. Restart game to see changes.");
+		else
+		{
+			createInfo("Notice", "No active mod found for this title.");
+		}
 	}
 	else
 	{
