@@ -24,8 +24,8 @@ Then you can apply or disable your mod!
 
 Pocky uses the following folders to store the files it generates. Note that all the working directories are automatically generated on first launch (or when Pocky finds a new title that doesn't have a working directory yet).
 
-* **`sdmc:/Pocky`**: root path
-* **`sdmc:/Pocky/mods/<game title>`**: root path for all the mods for a generic game
+* **`sdmc:/3ds/Pocky`**: root path
+* **`sdmc:/3ds/Pocky/mods/<game title>`**: root path for all the mods for a generic game
 
 ## License
 
