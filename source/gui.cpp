@@ -37,8 +37,8 @@ Gui::Gui(void)
 	bottomScrollEnabled = false;
 	info.init("", "", 0);
 	error.init(0, "");
-	buttonDisable = new Clickable(20, 185, 135, 40, COLOR_ACCENT, WHITE, "Disable Mod", true);
-	buttonApply = new Clickable(165, 185, 135, 40, COLOR_ACCENT, WHITE, "Apply Mod", true);
+	buttonDisable = new Clickable(20, 185, 135, 40, COLOR_ACCENT, COLOR_ACCENT, "Disable Mod", true);
+	buttonApply = new Clickable(165, 185, 135, 40, COLOR_ACCENT, COLOR_ACCENT, "Apply Mod", true);
 	directoryList = new Scrollable(6, 102, 196, 110, 5);
 }
 
