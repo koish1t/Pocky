@@ -45,6 +45,7 @@ public:
 	u32 getExtdataId(void);
 	FS_MediaType getMediaType(void);
 	size_t getTextureId(void);
+	bool hasActiveMod(void);
 	
 private:
 	bool accessibleSave = true;

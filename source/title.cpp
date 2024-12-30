@@ -333,3 +333,13 @@ void refreshDirectories(size_t i)
 		titleExtdatas.at(i).refreshDirectories();
 	}
 }
+
+bool Title::hasActiveMod(void)
+{
+	std::u16string lumaBasePath = u8tou16("/luma/titles/");
+	char titlePath[34];
+	snprintf(titlePath, sizeof(titlePath), "%016llX", id);
+	std::u16string lumaTitlePath = lumaBasePath + u8tou16(titlePath) + u8tou16("/romfs");
+	
+	return directoryExist(getArchiveSDMC(), lumaTitlePath);
+}

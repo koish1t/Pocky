@@ -37,8 +37,8 @@ Gui::Gui(void)
 	bottomScrollEnabled = false;
 	info.init("", "", 0);
 	error.init(0, "");
-	buttonDisable = new Clickable(204, 102, 110, 54, WHITE, bottomScrollEnabled ? BLACK : GREYISH, "Disable Mod", true);
-	buttonApply = new Clickable(204, 158, 110, 54, WHITE, bottomScrollEnabled ? BLACK : GREYISH, "Apply Mod", true);
+	buttonDisable = new Clickable(20, 185, 135, 40, COLOR_ACCENT, WHITE, "Disable Mod", true);
+	buttonApply = new Clickable(165, 185, 135, 40, COLOR_ACCENT, WHITE, "Apply Mod", true);
 	directoryList = new Scrollable(6, 102, 196, 110, 5);
 }
 
@@ -73,13 +73,13 @@ void Gui::updateButtonsColor(void)
 {
 	if (bottomScrollEnabled)
 	{
-		buttonDisable->setColors(WHITE, BLACK);
-		buttonApply->setColors(WHITE, BLACK);
+		buttonDisable->setColors(WHITE, COLOR_ACCENT);
+		buttonApply->setColors(WHITE, COLOR_ACCENT);
 	}
 	else
 	{
-		buttonDisable->setColors(WHITE, GREYISH);
-		buttonApply->setColors(WHITE, GREYISH);		
+		buttonDisable->setColors(WHITE, COLOR_ACCENT);
+		buttonApply->setColors(WHITE, COLOR_ACCENT);		
 	}
 }
 
@@ -126,89 +126,109 @@ int Gui::getSelectorY(size_t index)
 void Gui::draw(void)
 {
 	const size_t entries = rowlen * collen;
-	const size_t max = (getTitlesCount() - page*entries) > entries ? entries : getTitlesCount() - page*entries;
-	
-	char version[10];
-	sprintf(version, "v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
-	float versionLen = pp2d_get_text_width(version, 0.45f, 0.45f);
-	float smLen = pp2d_get_text_width("Pocky", 0.50f, 0.50f);
-	
-	const Mode_t mode = getMode();
+	const size_t max = getTitlesCount(); 
 	
 	pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-		pp2d_draw_rectangle(0, 0, 400, 19, COLOR_BARS);
-		pp2d_draw_rectangle(0, 221, 400, 19, COLOR_BARS);
+	pp2d_draw_rectangle(0, 0, 400, 240, COLOR_BG);
+
+	if (getTitlesCount() > 0)
+	{
+		Title title;
+		getTitle(title, index + page*entries);
 		
-		pp2d_draw_text(4, 3, 0.45f, 0.45f, GREYISH, getTime().c_str());
-		pp2d_draw_text(TOP_WIDTH - 4 - versionLen, 3, 0.45f, 0.45f, GREYISH, version);
-		pp2d_draw_text(TOP_WIDTH - 6 - versionLen - smLen, 2, 0.50f, 0.50f, WHITE, "Pocky");
+		pp2d_draw_texture_scale(getTextureId(index + page*entries), 20, 20, 2.0f, 2.0f);
+		pp2d_draw_text(140, 30, 0.8f, 0.8f, WHITE, title.getShortDescription().c_str());
+		pp2d_draw_textf(140, 60, 0.5f, 0.5f, GREYISH, "Game ID: %08X", title.getLowId());
+		pp2d_draw_textf(140, 80, 0.5f, 0.5f, GREYISH, "Media: %s", title.getMediatypeString().c_str());
 		
-		for (size_t k = page*entries; k < page*entries + max; k++)
+		if (title.hasActiveMod())
 		{
-			pp2d_draw_texture(getTextureId(k), getSelectorX(k) + 1, getSelectorY(k) + 1);			
+			pp2d_draw_rectangle(140, 100, 200, 30, COLOR_ACCENT);
+			pp2d_draw_text(150, 108, 0.5f, 0.5f, WHITE, "Active Mod Installed");
 		}
 		
-		if (getTitlesCount() > 0)
-		{
-			drawSelector();
+		pp2d_draw_rectangle(0, 160, 400, 80, COLOR_ACCENT);
+		static int scrollOffset = 0;  
+		static size_t lastIndex = 0;
+
+		if (lastIndex != (index + page*entries)) {
+			int targetOffset = (index + page*entries) * 60 - 170;
+			scrollOffset = targetOffset;
+			lastIndex = index + page*entries;
 		}
-		
-		static const float p1width = pp2d_get_text_width("\uE000 to select game. \uE006 to move.", 0.47f, 0.47f);
-		static const float p2width = pp2d_get_text_width("extdata", 0.47f, 0.47f);
-		static const float p3width = pp2d_get_text_width(". \uE006 to move.", 0.47f, 0.47f);
-		static const float border = (TOP_WIDTH - p1width - p2width - p3width) / 2;
-		pp2d_draw_text(border, 224, 0.47f, 0.47f, WHITE, "\uE000 to select game. \uE006 to move.");
-		pp2d_draw_text(border + p1width, 224, 0.47f, 0.47f, getMode() == MODE_MOD ? WHITE : RED, "extdata");
-		pp2d_draw_text(border + p1width + p2width, 224, 0.47f, 0.47f, WHITE, ". \uE006 to move.");
-		
-		info.draw();
-		error.draw();
-		
-		pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-		pp2d_draw_rectangle(0, 0, 320, 19, COLOR_BARS);
-		pp2d_draw_rectangle(0, 221, 320, 19, COLOR_BARS);
-		
-		if (getTitlesCount() > 0)
+
+		scrollOffset = std::max(0, scrollOffset);
+		scrollOffset = std::min(scrollOffset, static_cast<int>((getTitlesCount() * 60) - 380));
+
+		for (size_t k = 0; k < max; k++)
 		{
-			Title title;
-			getTitle(title, index + page*entries);
+			int x = 20 - scrollOffset + (k * 60);
 			
-			directoryList->flush();
-			std::vector<std::u16string> dirs = mode == MODE_MOD ? title.getDirectories() : title.getExtdatas();
-			std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
-			
-			for (size_t i = 0; i < dirs.size(); i++)
+			if (x >= -50 && x <= 400) 
 			{
-				directoryList->addCell(WHITE, bottomScrollEnabled ? BLUE : GREYISH, convert.to_bytes(dirs.at(i)));
-				if (i == directoryList->getIndex())
-				{
-					directoryList->invertCellColors(i);
+				Title currentTitle;
+				getTitle(currentTitle, k);
+				
+				if (k == index + page*entries) {
+					pp2d_draw_rectangle(x-2, 170, 54, 54, COLOR_SELECTED);
+					pp2d_draw_rectangle(x-2, 224, 54, 6, COLOR_ACTIVE_MOD);
+				}
+				
+				pp2d_draw_texture(getTextureId(k), x, 172);
+				
+				if (currentTitle.hasActiveMod()) {
+					pp2d_draw_rectangle(x+40, 172, 8, 8, COLOR_ACTIVE_MOD);
 				}
 			}
-			
-			pp2d_draw_text(4, 1, 0.6f, 0.6f, WHITE, title.getShortDescription().c_str());
-			pp2d_draw_text_wrap(4, 27, 0.55f, 0.55f, GREYISH, 240, title.getLongDescription().c_str());
-			
-			float longDescrHeight = pp2d_get_text_height_wrap(title.getLongDescription().c_str(), 0.55f, 0.55f, 240);
-			pp2d_draw_text(4, 31 + longDescrHeight, 0.5f, 0.5f, GREYISH, "ID:");
-			pp2d_draw_textf(25, 31 + longDescrHeight, 0.5f, 0.5f, WHITE, "%08X", title.getLowId());
-			pp2d_draw_text(4, 47 + longDescrHeight, 0.5f, 0.5f, GREYISH, "Mediatype:");
-			pp2d_draw_textf(75, 47 + longDescrHeight, 0.5f, 0.5f, WHITE, "%s", title.getMediatypeString().c_str());
-			
-			pp2d_draw_rectangle(260, 27, 52, 52, BLACK);
-			pp2d_draw_texture(title.getTextureId(), 262, 29);
-			
-			pp2d_draw_rectangle(4, 100, 312, 114, GREYISH);
-			pp2d_draw_rectangle(6, 102, 308, 110, COLOR_BARS);
-			pp2d_draw_rectangle(202, 102, 2, 110, GREYISH);
-			pp2d_draw_rectangle(204, 156, 110, 2, GREYISH);
+		}
+	}
 
-			directoryList->draw();
-			buttonDisable->draw();
-			buttonApply->draw();
+	pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+	pp2d_draw_rectangle(0, 0, 320, 240, COLOR_BG);
+	
+	if (getTitlesCount() > 0)
+	{
+		Title title;
+		getTitle(title, index + page*entries);
+		
+		pp2d_draw_rectangle(0, 0, 320, 40, COLOR_ACCENT);
+		pp2d_draw_text(10, 12, 0.7f, 0.7f, WHITE, "Available Mods");
+		
+		std::vector<std::u16string> dirs = title.getDirectories();
+		std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+		
+		for (size_t i = 0; i < dirs.size(); i++)
+		{
+			bool isSelected = i == directoryList->getIndex();
+			int yPos = 50 + (i * 35);
+			
+			pp2d_draw_rectangle(10, yPos, 300, 30, 
+							  isSelected ? COLOR_SELECTED : COLOR_LIST_BG);
+			
+			if (isSelected) {
+				pp2d_draw_rectangle(10, yPos, 4, 30, COLOR_ACTIVE_MOD);
+			}
+			
+			pp2d_draw_text(20, yPos + 8, 0.5f, 0.5f, WHITE, 
+						  convert.to_bytes(dirs.at(i)).c_str());
 		}
 		
-		pp2d_draw_text_center(GFX_BOTTOM, 224, 0.46f, 0.46f, WHITE, "Press \uE073 to exit.");
+		pp2d_draw_rectangle(0, 180, 320, 60, COLOR_ACCENT);
+		
+		if (bottomScrollEnabled) {
+			pp2d_draw_rectangle(20, 185, 135, 40, RGBA8(255, 255, 255, 30));
+			pp2d_draw_rectangle(165, 185, 135, 40, RGBA8(255, 255, 255, 30));
+		}
+		
+		buttonDisable->draw();
+		buttonApply->draw();
+		
+		pp2d_draw_text(10, 227, 0.45f, 0.45f, RGBA8(255, 255, 255, 180), 
+					  "\uE000 Select   \uE001 Back   \uE006 Browse");
+	}
+	
+	info.draw();
+	error.draw();
 	pp2d_end_draw();
 }
 

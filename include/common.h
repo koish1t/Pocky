@@ -46,6 +46,13 @@
 #include "title.h"
 #include "util.h"
 
+#define COLOR_ACCENT        RGBA8(45, 45, 45, 255)
+#define COLOR_BG           RGBA8(30, 30, 30, 255)
+#define COLOR_BORDER       RGBA8(70, 70, 70, 255)
+#define COLOR_LIST_BG      RGBA8(40, 40, 40, 255)
+#define COLOR_SELECTED     RGBA8(65, 65, 65, 255)
+#define COLOR_ACTIVE_MOD   RGBA8(0, 255, 128, 255)
+
 void createInfo(std::string title, std::string message);
 void createError(Result res, std::string message);
 
