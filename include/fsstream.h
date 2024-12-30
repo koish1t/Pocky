@@ -21,6 +21,8 @@
 
 #include "common.h"
 
+class Scrollable;
+
 u64 getFileSize(FS_Archive archive, std::u16string path);
 bool fileExist(FS_Archive archive, std::u16string path);
 
@@ -32,7 +34,7 @@ Result createDirectory(FS_Archive archive, std::u16string path);
 bool directoryExist(FS_Archive archive, std::u16string path);
 Result copyDirectory(FS_Archive srcArch, FS_Archive dstArch, std::u16string srcPath, std::u16string dstPath);
 
-void applyMod(size_t index);
+void applyMod(size_t index, Scrollable* directoryList);
 Result disableMod(size_t index);
 
 class FSStream

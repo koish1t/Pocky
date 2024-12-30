@@ -23,12 +23,6 @@ static Info info;
 static Error error;
 static Clickable* buttonDisable;
 static Clickable* buttonApply;
-static Scrollable* directoryList;
-
-size_t getScrollableIndex(void)
-{
-	return directoryList->getIndex();
-} 
 
 Gui::Gui(void)
 {
@@ -252,4 +246,9 @@ void Gui::drawButtons(void)
 {
     buttonDisable->draw();
     buttonApply->draw();
+}
+
+size_t Gui::getScrollableIndex(void)
+{
+    return directoryList->getIndex();
 }

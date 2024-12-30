@@ -235,22 +235,23 @@ bool directoryExist(FS_Archive archive, std::u16string path)
 	return true;
 }
 
-void applyMod(size_t index)
+void applyMod(size_t index, Scrollable* directoryList)
 {
-	const size_t cellIndex = getScrollableIndex();
-	if (cellIndex == 0) 
+	Title title;
+	getTitle(title, index);
+	
+	std::vector<std::u16string> dirs = title.getDirectories();
+	const size_t modIndex = directoryList->getIndex();
+	if (dirs.empty() || modIndex >= dirs.size()) 
 	{
 		return;
 	}
 	
 	Result res = 0;
-	Title title;
-	getTitle(title, index);
-	
 	std::u16string lumaBasePath = u8tou16("/luma/titles/");
 	char titlePath[34];
 	snprintf(titlePath, sizeof(titlePath), "%016llX", title.getId());
-	std::u16string lumaTitlePath = lumaBasePath + u8tou16(titlePath) + u8tou16("/");
+	std::u16string lumaTitlePath = lumaBasePath + u8tou16(titlePath) + u8tou16("/romfs/");
 	
 	if (!directoryExist(getArchiveSDMC(), lumaBasePath))
 	{
@@ -280,7 +281,7 @@ void applyMod(size_t index)
 	}
 	
 	std::u16string srcPath = title.getBackupPath();
-	srcPath += u8tou16("/") + u8tou16(getPathFromCell(cellIndex).c_str()) + u8tou16("/");
+	srcPath += u8tou16("/") + dirs[modIndex] + u8tou16("/romfs/");
 	
 	res = copyDirectory(getArchiveSDMC(), getArchiveSDMC(), srcPath, lumaTitlePath);
 	if (R_FAILED(res))
@@ -289,7 +290,10 @@ void applyMod(size_t index)
 		return;
 	}
 	
-	createInfo("Success!", getPathFromCell(cellIndex) + " has been applied. Restart game to see changes.");
+	std::string modName;
+	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
+	modName = convert.to_bytes(dirs[modIndex]);
+	createInfo("Success!", modName + " has been applied. Restart game to see changes.");
 }
 
 Result deleteEntry(FS_Archive archive, const std::u16string &path) {

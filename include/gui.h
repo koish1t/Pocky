@@ -32,8 +32,6 @@
 
 class Clickable;
 
-size_t getScrollableIndex(void);
-
 class Gui
 {
 public:
@@ -54,6 +52,9 @@ public:
 	
 	void draw(void);
 
+	Scrollable* getDirectoryList(void) { return directoryList; }
+	size_t getScrollableIndex(void);
+
 private:
 	void drawSelector(void);
 	int getSelectorX(size_t index);
@@ -67,6 +68,7 @@ private:
 	bool bottomScrollEnabled;
 	Clickable* buttonDisable;
 	Clickable* buttonApply;
+	Scrollable* directoryList;
 };
 
 #endif

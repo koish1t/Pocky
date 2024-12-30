@@ -61,7 +61,7 @@ int main() {
 		
 		if (menu->isApplyReleased())
 		{
-			applyMod(menu->getNormalizedIndex());
+			applyMod(menu->getNormalizedIndex(), menu->getDirectoryList());
 		}
 		
 		menu->updateSelector();
