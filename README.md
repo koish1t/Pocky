@@ -31,5 +31,5 @@ This project is licensed under the GNU GPLv3. See [LICENSE.md](https://github.co
 
 # Credits
 
-YoPhlox - Pocky
-BernardoGiordano - Checkpoint
+* YoPhlox - Pocky
+* BernardoGiordano - Checkpoint
