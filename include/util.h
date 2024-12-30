@@ -23,5 +23,8 @@
 
 void servicesExit(void);
 void servicesInit(void);
+void createLumaTitleFolders(void);
+
+bool checkHigh(u64 id);
 
 #endif

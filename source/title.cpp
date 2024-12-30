@@ -17,8 +17,8 @@
 */
 
 #include "title.h"
+#include "util.h"
 
-static bool checkHigh(u64 id);
 static void loadTextureIcon(smdh_s *smdh, size_t i);
 
 static std::vector<Title> titleSaves;
@@ -212,12 +212,6 @@ FS_MediaType Title::getMediaType(void)
 size_t Title::getTextureId(void)
 {
 	return textureId;
-}
-
-static bool checkHigh(u64 id)
-{
-	u32 high = id >> 32;
-	return (high == 0x00040000 || high == 0x00040002);
 }
 
 void loadTitles(void)
