@@ -36,7 +36,7 @@ LOGO                :=
 
 # If left blank, makerom will use default values (0xff3ff and CTR-P-CTAP, respectively)
 # Be careful if UNIQUE_ID is the same as other apps: it will overwrite the previously installed one
-UNIQUE_ID           :=	0xBCFFF
+UNIQUE_ID           :=	0xA12CD
 PRODUCT_CODE        :=	CTR-HB-CKPT
 
 VERSION_MAJOR := 1
