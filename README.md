@@ -12,6 +12,12 @@ When you first open the app it makes folders for all of your games.
 
 Then you gotta make the mods folder for it and then add the romfs folder to it.
 
+```
+/3ds/Pocky/mods/TitleId GameName/
+    ├── ModName/
+        └── romfs/
+```
+
 Then you can apply or disable your mod!
 
 ## Working path
