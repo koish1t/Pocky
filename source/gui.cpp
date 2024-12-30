@@ -73,13 +73,13 @@ void Gui::updateButtonsColor(void)
 {
 	if (bottomScrollEnabled)
 	{
-		buttonDisable->setColors(WHITE, COLOR_ACCENT);
-		buttonApply->setColors(WHITE, COLOR_ACCENT);
+		buttonDisable->setColors(COLOR_ACCENT, COLOR_ACCENT);
+		buttonApply->setColors(COLOR_ACCENT, COLOR_ACCENT);
 	}
 	else
 	{
-		buttonDisable->setColors(WHITE, COLOR_ACCENT);
-		buttonApply->setColors(WHITE, COLOR_ACCENT);		
+		buttonDisable->setColors(COLOR_ACCENT, COLOR_ACCENT);
+		buttonApply->setColors(COLOR_ACCENT, COLOR_ACCENT);		
 	}
 }
 
