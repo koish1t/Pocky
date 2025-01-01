@@ -70,5 +70,4 @@ private:
 	Clickable* buttonApply;
 	Scrollable* directoryList;
 };
-
 #endif

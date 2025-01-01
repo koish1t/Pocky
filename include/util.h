@@ -26,5 +26,6 @@ void servicesInit(void);
 void createLumaTitleFolders(void);
 
 bool checkHigh(u64 id);
+bool directoryEqual(FS_Archive archive, const std::u16string& dir1, const std::u16string& dir2);
 
 #endif

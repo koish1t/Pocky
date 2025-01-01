@@ -46,6 +46,7 @@ public:
 	FS_MediaType getMediaType(void);
 	size_t getTextureId(void);
 	bool hasActiveMod(void);
+	std::u16string getActiveModPath(void);
 	
 private:
 	bool accessibleSave = true;

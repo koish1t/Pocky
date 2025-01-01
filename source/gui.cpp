@@ -191,21 +191,47 @@ void Gui::draw(void)
 		std::vector<std::u16string> dirs = title.getDirectories();
 		std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
 		
-		for (size_t i = 0; i < dirs.size(); i++)
-		{
-			bool isSelected = i == directoryList->getIndex();
-			int yPos = 50 + (i * 35);
-			
-			pp2d_draw_rectangle(10, yPos, 300, 30, 
-							  isSelected ? COLOR_SELECTED : COLOR_LIST_BG);
-			
-			if (isSelected) {
-				pp2d_draw_rectangle(10, yPos, 4, 30, COLOR_ACTIVE_MOD);
-			}
-			
-			pp2d_draw_text(20, yPos + 8, 0.5f, 0.5f, WHITE, 
-						  convert.to_bytes(dirs.at(i)).c_str());
-		}
+        std::u16string activeModDir = title.getActiveModPath();
+        
+        int visibleItems = 4;
+        int maxIndex = std::max(0, (int)dirs.size() - 1);
+        int currentIndex = std::min((int)directoryList->getIndex(), maxIndex);
+        directoryList->setIndex(currentIndex); 
+        
+        int scrollOffset = std::max(0, currentIndex - 1);
+        int startIdx = scrollOffset;
+        int endIdx = std::min(startIdx + visibleItems, (int)dirs.size());
+        
+        for (int i = startIdx; i < endIdx; i++)
+        {
+            bool isSelected = i == directoryList->getIndex();
+            bool isActive = dirs[i] == activeModDir;
+            int yPos = 50 + ((i - startIdx) * 35); 
+            
+            pp2d_draw_rectangle(10, yPos, 300, 30, 
+                              isSelected ? COLOR_SELECTED : COLOR_LIST_BG);
+            
+            if (isSelected) {
+                pp2d_draw_rectangle(10, yPos, 4, 30, COLOR_ACTIVE_MOD);
+            }
+            
+            if (isActive && i > 0) {
+                pp2d_draw_text(280, yPos + 8, 0.5f, 0.5f, COLOR_ACTIVE_MOD, "●");
+            }
+            
+            pp2d_draw_text(20, yPos + 8, 0.5f, 0.5f, WHITE, 
+                          convert.to_bytes(dirs.at(i)).c_str());
+        }
+        
+        // draws the arrows, I'm personally gonna keep this commented out for public releases but uncomment it if you wanna.
+		/*
+        if (startIdx > 0) {
+            pp2d_draw_text(300, 45, 0.5f, 0.5f, WHITE, "▲");
+        }
+        if (endIdx < dirs.size()) {
+            pp2d_draw_text(300, 155, 0.5f, 0.5f, WHITE, "▼");
+        }
+		*/
 		
 		pp2d_draw_rectangle(0, 180, 320, 60, COLOR_ACCENT);
 		

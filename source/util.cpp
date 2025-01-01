@@ -101,3 +101,30 @@ void createLumaTitleFolders(void) {
         }
     }
 }
+
+bool directoryEqual(FS_Archive archive, const std::u16string& dir1, const std::u16string& dir2) 
+{
+    Directory d1(archive, dir1);
+    Directory d2(archive, dir2);
+    
+    if (!d1.getLoaded() || !d2.getLoaded()) {
+        return false;
+    }
+    
+    if (d1.getCount() != d2.getCount()) {
+        return false;
+    }
+    
+    std::vector<std::u16string> items1;
+    std::vector<std::u16string> items2;
+    
+    for (size_t i = 0; i < d1.getCount(); i++) {
+        items1.push_back(d1.getItem(i));
+        items2.push_back(d2.getItem(i));
+    }
+    
+    std::sort(items1.begin(), items1.end());
+    std::sort(items2.begin(), items2.end());
+    
+    return items1 == items2;
+}

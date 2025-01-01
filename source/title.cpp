@@ -337,3 +337,34 @@ bool Title::hasActiveMod(void)
 	
 	return directoryExist(getArchiveSDMC(), lumaTitlePath);
 }
+
+std::u16string Title::getActiveModPath(void)
+{
+    std::u16string lumaPath = u8tou16("/luma/titles/");
+    char titlePath[34];
+    snprintf(titlePath, sizeof(titlePath), "%016llX", id);
+    std::u16string lumaTitlePath = lumaPath + u8tou16(titlePath) + u8tou16("/romfs");
+    
+    if (directoryExist(getArchiveSDMC(), lumaTitlePath))
+    {
+        Directory modDir(getArchiveSDMC(), backupPath);
+        if (modDir.getLoaded())
+        {
+            for (size_t i = 0; i < modDir.getCount(); i++)
+            {
+                if (modDir.isFolder(i))
+                {
+                    std::u16string modPath = modDir.getItem(i);
+                    std::u16string fullModPath = backupPath + u8tou16("/") + modPath + u8tou16("/romfs");
+                    
+                    if (directoryEqual(getArchiveSDMC(), lumaTitlePath, fullModPath))
+                    {
+                        return modPath;
+                    }
+                }
+            }
+        }
+    }
+    
+    return u8tou16("");
+}

@@ -34,6 +34,8 @@ This project is licensed under the GNU GPLv3. See [LICENSE.md](https://github.co
 # Tested Games
 
 - Hatsune Miku: Project Mirai DX
+- New Super Mario Bros 2 (Original and Gold Edition)
+- Super Mario Maker
 
 # Credits
 
